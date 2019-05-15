@@ -9,7 +9,9 @@ export default class extends BaseValidator {
     return super._cannotEmpty()
       .then(this._checkLength)
       .then((res) => {
-        return { success: true }; // Promise.resolve({ success: true })と同一
+        return {
+          success: true
+        }; // Promise.resolve({ success: true })と同一
       })
       .catch(err => {
         return err; // Promise.resolve(err)と同一
@@ -24,6 +26,45 @@ export default class extends BaseValidator {
         type: 'password',
         message: 'パスワードが短すぎます。'
       });
+    }
+  }
+  _checkFormat() {
+    const re = /^[a-zA-Z0-9_-.@]+$/i;
+    const match = re.test(this.val);
+    if (match) {
+      return Promise.resolve();
+    } else {
+      return Promise.reject({
+        success: false,
+        type: this.type,
+        message: `${this.typeName}は半角英数字と記号のみが利用可能です。`
+      })
+    }
+  }
+  _includeUpperCase() {
+    const re = /[A-Z]+/;
+    const match = re.test(this.val);
+    if (match) {
+      return Promise.resolve();
+    } else {
+      return Promise.reject({
+        success: false,
+        type: this.type,
+        message: `${this.typeName}は必ず大文字のアルファベットが含まれる必要があります。`
+      })
+    }
+  }
+  _includeSymbol() {
+    const re = /[_-.@]+/;
+    const match = re.test(this.val);
+    if (match) {
+      return Promise.resolve();
+    } else {
+      return Promise.reject({
+        success: false,
+        type: this.type,
+        message: `${this.typeName}は必ず_-.@いずれかの記号が1文字以上含まれる必要があります。`
+      })
     }
   }
 }
