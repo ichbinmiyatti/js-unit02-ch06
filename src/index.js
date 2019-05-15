@@ -19,8 +19,8 @@ const validate = (params) => {
     nameValidator.validate(),
     usernameValidator.validate(),
     mailValidator.validate(),
-    passwordValidator.validate()]
-  )
+    passwordValidator.validate()
+  ])
 }
 
 const removeErrors = () => {
@@ -43,38 +43,50 @@ const addErrorMessage = (type, message) => {
 
 const signup = (params) => {
   return fetch(`${endpoint}/signup`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json; charset=utf-8',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: params.name,
-      username: params.username,
-      email: params.email,
-      password: params.password
+      method: 'POST',
+      headers: {
+        Accept: 'application/json; charset=utf-8',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: params.name,
+        username: params.username,
+        email: params.email,
+        password: params.password
+      })
     })
-  })
-  .then((res) => {
-    const json = res.json();
-    if (res.status === 200) { // 登録成功
-      return json
-    } else { // 登録失敗
-      return Promise.reject(new Error('ユーザー登録失敗'))
-    }
-  })
+    .then((res) => {
+      const json = res.json();
+      if (res.status === 200) { // 登録成功
+        return json
+      } else { // 登録失敗
+        return Promise.reject(new Error('ユーザー登録失敗'))
+      }
+    })
 }
 
 const onSubmit = async () => {
   await removeErrors()
+  const nameInput = document.getElementById('name');
+  const usernameInput = document.getElementById('username');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const nameVal = nameInput.Value;
+  const usernameVal = usernameInput.Value;
+  const emailVal = emailInput.Value;
+  const passwordVal = passwordInput.Value;
   const params = {
-    email: 'メールアドレスの値',
-    password: 'パスワードの値',
-    username: 'ユーザー名の値',
-    name: '名前の値'
+    email: emailVal,
+    password: passwordVal,
+    username: usernameVal,
+    name: nameVal
   }
   const results = await validate(params);
-  if (true /* バリデーション成功時 */) {
+  if (
+    results[0].success &&
+    results[1].success &&
+    results[2].success &&
+    results[3].success) {
     signup(params)
       .then((json) => {
         alert(json.message);
@@ -83,7 +95,9 @@ const onSubmit = async () => {
         alert(err.message);
       });
   } else {
-    /* エラーメッセージを出力 */
+    results.forEach((result) => {
+      if (!result.success) addErrorMessage(result.type, result.message);
+    });
   }
 }
 
