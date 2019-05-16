@@ -18,10 +18,7 @@ export default class extends BaseValidator {
       });
   }
   _checkFormat() {
-    /*
-      ユーザー名には半角英数字または@_-.の4つの記号のみを利用可能です。
-    */
-    const re = /^[a-zA-Z0-9_-.@]+$/i;
+    const re = /^[a-zA-Z0-9_-.@]*$/i;
     const match = re.test(this.val);
     if (match) {
       return Promise.resolve();

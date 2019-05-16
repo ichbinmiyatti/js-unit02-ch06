@@ -13,8 +13,8 @@ const validate = (params) => {
   const username = params.username;
   const mailValidator = new MailValidator(email);
   const passwordValidator = new PasswordValidator(password);
-  const nameValidator = new NameValidator(name)
-  const usernameValidator = new UsernameValidator(username)
+  const nameValidator = new NameValidator(name);
+  const usernameValidator = new UsernameValidator(username);
   return Promise.all([
     nameValidator.validate(),
     usernameValidator.validate(),

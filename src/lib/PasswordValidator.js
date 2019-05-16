@@ -4,10 +4,16 @@ export default class extends BaseValidator {
   constructor(val) {
     super(val, 'パスワード', 'password');
     this._checkLength = this._checkLength.bind(this);
+    this._checkFormat = this._checkFormat.bind(this);
+    this._includeUpperCase = this._includeUpperCase.bind(this);
+    this._includeSymbol = this._includeSymbol.bind(this);
   }
   validate() {
     return super._cannotEmpty()
       .then(this._checkLength)
+      .then(this._checkFormat)
+      .then(this._includeUpperCase)
+      .then(this._includeSymbol)
       .then((res) => {
         return {
           success: true
@@ -29,7 +35,7 @@ export default class extends BaseValidator {
     }
   }
   _checkFormat() {
-    const re = /^[a-zA-Z0-9_-.@]+$/i;
+    const re = /^[a-zA-Z0-9_-.@]*$/i;
     const match = re.test(this.val);
     if (match) {
       return Promise.resolve();
